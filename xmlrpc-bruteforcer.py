@@ -24,6 +24,7 @@ from tqdm import tqdm
 import threading
 import time
 import xmlrpc.client
+import ssl
 
 # Stop threads_number when set to True
 exit_flag = False
@@ -45,7 +46,8 @@ class Thread(threading.Thread):
         self.verbose = verbose
 
     def run(self):
-        proxy = xmlrpc.client.ServerProxy(self.xmlrpc_intf)
+	transport = xmlrpc.client.SafeTransport(context=ssl._create_unverified_context())
+        proxy = xmlrpc.client.ServerProxy(self.xmlrpc_intf, context=context)
         self.caller(proxy)
 
     def caller(self, proxy):
